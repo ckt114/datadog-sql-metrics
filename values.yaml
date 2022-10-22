@@ -1,0 +1,150 @@
+# Default values for datadog-sql-metrics.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+imagePullSecrets: []
+
+image:
+  repository: gcr.io/datadoghq/agent
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "7.39.0"
+
+cloudsqlproxy:
+  enabled: false
+  image:
+    repository: gcr.io/cloudsql-docker/gce-proxy
+    tag: "1.32.0"
+  # The CloudSQL instance string with format: projectId.region.dbname=tcp:port
+  instance: project:region:database=tcp:5432
+  # Secret with `credentials.json` key containing CloudSQL authentication.
+  # kind: Secret
+  #   data:
+  #     credentials.json |-
+  #       [SECRET DATA]
+  serviceAccountKeySecret: ''
+  resources: {}
+
+datadog:
+  # Datadog API key. Define `apiKey` or `apiKeySecret`, not both.
+  apiKey: ''
+  # Secret to use as Datadog API key. Define `apiKey` or `apiKeySecret`, not both.
+  apiKeySecret: ''
+  logLevel: INFO
+
+# References
+# - PostgreSQL: https://github.com/DataDog/integrations-core/blob/master/postgres/datadog_checks/postgres/data/conf.yaml.example
+# - MySQL: https://github.com/DataDog/integrations-core/blob/master/mysql/datadog_checks/mysql/data/conf.yaml.example
+# - SQL Server: https://github.com/DataDog/integrations-core/blob/master/sqlserver/datadog_checks/sqlserver/data/conf.yaml.example
+database:
+  # Database type of mysql, postgres, or sqlserver.
+  type: postgres
+  # Database username.
+  username: dbuser
+  # Database password. Define `password` or `passwordSecret`, not both.
+  password: dbpass
+  # Secret to use as DB password with key `dbPassword`. Define `password` or `passwordSecret`, not both.
+  passwordSecret: ''
+
+  # Database configuration. Refer to references above for your DB server.
+  # Parameters host, username, password, and database/dbname are required.
+  # The username and password params must be defined with values DB_USERNAME and DB_PASSWORD respectively.
+  # They will be replaced with real values from database.username and database.password/database.passwordSecret.
+  # Examples
+  #   PostgreSQL
+  #     instances:
+  #     - host: localhost
+  #       dbname: postgres
+  #       username: DB_USERNAME
+  #       password: DB_PASSWORD
+  #       min_collection_interval: 60
+  #       collect_bloat_metrics: false
+  #       disable_generic_tags: true
+  #       custom_queries:
+  #       - metric_prefix: metric.name.prefix
+  #         query: |
+  #           SELECT col1, col2
+  #           FROM tableName
+  #           WHERE 1 = 1
+  #         columns:
+  #         - name: field1
+  #           type: gauge
+  #         - name: fiedl2
+  #           type: gauge
+  #         tags:
+  #         - tag1:value1
+  #         - tag2:value2
+  #
+  #   MySQL
+  #     instances:
+  #     - host: localhost
+  #       port: 3306
+  #       username: DB_USERNAME
+  #       password: DB_PASSWORD
+  #       min_collection_interval: 60
+  #       collect_bloat_metrics: false
+  #       disable_generic_tags: true
+  #       custom_queries:
+  #       - metric_prefix: metric.name.prefix
+  #         ...
+  #
+  #   SQL Server
+  #     instances:
+  #     - host: localhost,1434
+  #       database: master
+  #       username: DB_USERNAME
+  #       password: DB_PASSWORD
+  #       server_version: '2014'
+  #       min_collection_interval: 60
+  #       collect_bloat_metrics: false
+  #       disable_generic_tags: true
+  #       custom_queries:
+  #       - metric_prefix: metric.name.prefix
+  #         ...
+  config: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ''
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5555
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
