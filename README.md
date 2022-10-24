@@ -9,7 +9,8 @@ $ helm upgrade --install datadog-sql-metrics $PWD
 ```
 
 ## Setup
-Configure `database` paramter for your DB server. See `values.yaml` for examples.
+1. Configure `database` paramter for your DB server. See `values.yaml` for examples.
+1. Add your queries to `custom_queries` under `database.config` parameter.
 
 ### References
 - [PostgreSQL](https://github.com/DataDog/integrations-core/blob/master/postgres/datadog_checks/postgres/data/conf.yaml.example)
